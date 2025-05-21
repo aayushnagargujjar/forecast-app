@@ -1,0 +1,8 @@
+services:
+  - type: web
+    name: forecast-service
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn main:app
+    autoDeploy: false
+    schedule: "daily 00:00"  # runs every day at midnight UTC
