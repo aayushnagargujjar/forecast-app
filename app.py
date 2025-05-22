@@ -39,7 +39,7 @@ def run_forecast():
         water_pred = forecast(water_df)
 
         result = []
-        for i in range(7):
+        for i in range(3):
             result.append({
                 "date": str(co2_pred.iloc[i]["ds"].date()),
                 "co2_pred": round(co2_pred.iloc[i]["yhat"], 2),
