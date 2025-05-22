@@ -16,10 +16,11 @@ def forecast(df):
     df['ds'] = pd.to_datetime(df['ds'])
     model = Prophet()
     model.fit(df)
-    # Forecast next 7 periods (days, if your data is daily)
-    future = model.make_future_dataframe(periods=7)
+    # Forecast next 3 periods (days, if your data is daily)
+    future = model.make_future_dataframe(periods=3) # <--- CHANGED FROM 7 TO 3
     forecast_result = model.predict(future)
-    return forecast_result[['ds', 'yhat']].tail(7) # Return only the forecasted dates and yhat
+    # Return only the forecasted dates and yhat for the last 3 periods
+    return forecast_result[['ds', 'yhat']].tail(3) # <--- CHANGED FROM 7 TO 3
 
 @app.route('/predict', methods=['POST']) # Endpoint for prediction
 def run_forecast():
@@ -39,9 +40,8 @@ def run_forecast():
         user_data = user_doc.to_dict()
 
         co2_data = user_data.get("co2_data", [])
-        # water_data = user_data.get("water_data", []) # Removed for CO2 only
 
-        if not co2_data: # Only check for CO2 data now
+        if not co2_data:
             return jsonify({"error": "No historical CO2 data for this user to forecast"}), 400
 
         # Convert CO2 data to Pandas DataFrame for Prophet
@@ -49,25 +49,21 @@ def run_forecast():
 
         # Perform CO2 forecast
         co2_pred = forecast(co2_df)
-        # water_pred = forecast(water_df) # Removed for CO2 only
 
         # Combine results into a list of dictionaries
         result = []
-        for i in range(7): # Assuming 7 days forecast from Prophet
+        # Iterate for 3 days now
+        for i in range(3): # <--- CHANGED FROM 7 TO 3
             result.append({
                 "date": str(co2_pred.iloc[i]["ds"].date()), # Convert timestamp to date string
                 "co2_pred": round(co2_pred.iloc[i]["yhat"], 2),
-                # "water_pred": round(water_pred.iloc[i]["yhat"], 2) # Removed for CO2 only
             })
 
-        # Update Firestore with the new forecast (only for CO2 part)
-        # Note: You might want to update this to a specific field for CO2 forecast
-        # if you later want to add water forecast back separately.
-        # For now, it updates 'user_forecast' but it will only contain 'co2_pred'.
+        # Update Firestore with the new forecast
         db.collection("users").document(uid).update({"user_forecast": result})
 
-        print(f"Forecast updated successfully for user: {uid} (CO2 only)") # Debugging print
-        return jsonify({"message": f"Forecast updated for user {uid} (CO2 only)"}), 200 # Return success JSON
+        print(f"Forecast updated successfully for user: {uid} (CO2 only, 3 days)") # Debugging print
+        return jsonify({"message": f"Forecast updated for user {uid} (CO2 only, 3 days)"}), 200 # Return success JSON
 
     except Exception as e:
         # Catch any other unexpected errors
@@ -75,4 +71,4 @@ def run_forecast():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=10000) # Render uses port 10000
+    app.run(host='0.0.0.0', port=10000)
