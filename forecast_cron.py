@@ -1,8 +1,6 @@
 from firebase_admin import credentials, firestore, initialize_app
 from prophet import Prophet
 import pandas as pd
-
-# Firebase setup
 cred = credentials.Certificate("firebase-key.json")
 initialize_app(cred)
 db = firestore.client()
