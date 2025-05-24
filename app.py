@@ -18,7 +18,7 @@ def run_forecast():
             return jsonify({"error": "UID not provided"}), 400
 
         # Fetch user data
-        user_doc = db.collection("users").document(uid).get()
+        user_doc = db.collection("users").document("user123").get()
         if not user_doc.exists:
             return jsonify({"error": f"User '{uid}' not found"}), 404
 
