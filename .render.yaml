@@ -3,6 +3,12 @@ services:
     name: forecast-service
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn main:app
+    startCommand: gunicorn main:app -c gunicorn.conf.py
     autoDeploy: false
-    schedule: "daily 00:00"  # runs every day at midnight UTC
+
+  - type: cron
+    name: forecast-cron
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: python forecast_cron.py
+    schedule: "daily 00:00"  # Runs once every day at midnight UTC
