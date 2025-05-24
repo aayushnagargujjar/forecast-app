@@ -38,7 +38,7 @@ def run_forecast():
         user_data = user_doc.to_dict()
         co2_data = user_data.get("co2_data", [])
         if not co2_data or len(co2_data) < 3:
-            return jsonify({"error": "Not enough CO₂ data (minimum 3 data points required)"}), 400
+            return jsonify({"error": "Not enough CO₂ data (minimum 3 data points required)"}), 403
 
         df_co2 = pd.DataFrame(co2_data).rename(columns={"date": "ds", "value": "y"})
         df_co2['ds'] = pd.to_datetime(df_co2['ds'])
