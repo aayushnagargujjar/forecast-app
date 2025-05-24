@@ -1,14 +1,3 @@
-from flask import Flask, request, jsonify
-from firebase_admin import credentials, firestore, initialize_app
-from prophet import Prophet
-import pandas as pd
-
-app = Flask(__name__)
-
-# Firebase setup
-cred = credentials.Certificate("firebase-key.json")
-initialize_app(cred)
-db = firestore.client()
 
 from flask import Flask, request, jsonify
 from firebase_admin import credentials, firestore, initialize_app
