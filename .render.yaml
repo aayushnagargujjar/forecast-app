@@ -3,7 +3,7 @@ services:
     name: forecast-service
     env: python
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn main:app -c gunicorn.conf.py
+    startCommand: gunicorn app:app -c gunicorn.conf.py
     autoDeploy: false
 
   - type: cron
